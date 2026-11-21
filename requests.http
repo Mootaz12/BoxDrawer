@@ -1,0 +1,59 @@
+### 1. Get a token (copy access_token into @token below)
+POST http://localhost:8180/realms/boxdrawer/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id=boxdrawer-client&username=demo&password=demo
+
+###
+@token = PASTE_ACCESS_TOKEN_HERE
+@gw = http://localhost:8080
+
+### No token -> 401
+GET {{gw}}/api/boards
+
+### Create a board
+POST {{gw}}/api/boards
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "name": "My first board" }
+
+### Voice command: grid
+POST {{gw}}/api/commands
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "boardId": 1, "text": "draw a grid of 4 by 4 squares" }
+
+### Voice command: link
+POST {{gw}}/api/commands
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "boardId": 1, "text": "map square 1 to square 6 label depends on" }
+
+### Command history
+GET {{gw}}/api/commands?boardId=1
+Authorization: Bearer {{token}}
+
+### Get the board
+GET {{gw}}/api/boards/1
+Authorization: Bearer {{token}}
+
+### Tag the board
+POST {{gw}}/api/boards/1/tags/important
+Authorization: Bearer {{token}}
+
+### Share the board (email appears in http://localhost:8025)
+POST {{gw}}/api/boards/1/share
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "email": "friend@example.com" }
+
+### Download the board as Excalidraw
+GET {{gw}}/api/boards/1/export
+Authorization: Bearer {{token}}
+
+### One-time share link from the email (no JWT, second call -> 410)
+GET {{gw}}/api/shared/PASTE_TOKEN_FROM_EMAIL

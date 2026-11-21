@@ -1,0 +1,7 @@
+target/
+.idea/
+*.iml
+docker/keycloak/realm-boxdrawer.json
+application.properties
+*.excalidraw
+demo.sh
